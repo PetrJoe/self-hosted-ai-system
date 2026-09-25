@@ -107,9 +107,27 @@ class Parser:
     
     @staticmethod
     def get_anim(html:  str, verification: str = "grok-site-verification") -> tuple:
+        """
+        Extract the site-verification token and derive the animation index.
+
+        The token may appear as a plain HTML meta tag (old layout) or inside
+        an escaped RSC payload (new layout). The RSC variant also renames the
+        meta with a unicode dash (grok-site\u2015verification), so match the
+        name flexibly and grab the first 48-byte (64-char) base64 token after it.
+        """
+        # old layout: <meta name="grok-site-verification" content="...">
+        if f'name="{verification}"' in html:
+            verification_token: str = Utils.between(html, f'name="{verification}" content="', '"')
+        else:
+            # new layout: {"name":"grok-site\u2015verification","content":"..."}
+            m = search(r'grok-site.verification.{0,40}?([A-Za-z0-9+/]{60,70}={0,2})', html)
+            if not m:
+                raise ValueError("Could not find site verification token")
+            verification_token: str = m.group(1)
         
-        verification_token: str = Utils.between(html, f'"name":"{verification}","content":"', '"')
-        array: list = list(b64decode(verification_token))
+        array: list = list(b64decode(verification_token + '=' * (-len(verification_token) % 4)))
+        if len(array) != 48:
+            raise ValueError(f"Unexpected verification token length: {len(array)}")
         anim: int = int(array[5] % 4)
 
         return verification_token, anim

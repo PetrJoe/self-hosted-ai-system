@@ -8,15 +8,17 @@ from uuid        import uuid4
 
 @dataclass
 class Models:
+    # model key -> [modelName (wire), modelMode (wire enum), mode (display)]
+    # Grok now takes a string modelMode enum: AUTO / LOW / HIGH / UNSPECIFIED
     models: dict[str, list[str]] = field(default_factory=lambda: {
-        "grok-3-auto": ["MODEL_MODE_AUTO", "auto"],
-        "grok-3-fast": ["MODEL_MODE_FAST", "fast"],
-        "grok-4": ["MODEL_MODE_EXPERT", "expert"],
-        "grok-4-mini-thinking-tahoe": ["MODEL_MODE_GROK_4_MINI_THINKING", "grok-4-mini-thinking"]
+        "grok-3-auto": ["grok-3", "AUTO", "auto"],
+        "grok-3":      ["grok-3", "AUTO", "auto"],
+        "grok-3-fast": ["grok-3", "LOW", "fast"],
+        "grok-4":      ["grok-4", "HIGH", "expert"],
     })
 
     def get_model_mode(self, model: str, index: int) -> str:
-        return self.models.get(model, ["MODEL_MODE_AUTO", "auto"])
+        return self.models.get(model, self.models["grok-3-auto"])[index]
 
 _Models = Models()
 
@@ -27,9 +29,10 @@ class Grok:
         self.session: requests.session.Session = requests.Session(impersonate="chrome142", default_headers=False)
         self.headers: Headers = Headers()
         
-        self.model_mode: str = _Models.get_model_mode(model, 0)
+        self.model_name: str = _Models.get_model_mode(model, 0)
+        self.model_mode: str = _Models.get_model_mode(model, 1)
         self.model: str = model
-        self.mode: str = _Models.get_model_mode(model, 1)
+        self.mode: str = _Models.get_model_mode(model, 2)
         self.c_run: int = 0
         self.proxy: str = proxy
         self.max_retries: int = max(1, max_retries)
@@ -225,7 +228,7 @@ class Grok:
         if not extra_data:
             conversation_data: dict = {
                 'temporary': False,
-                'modelName': self.model,
+                'modelName': self.model_name,
                 'message': message,
                 'fileAttachments': [],
                 'imageAttachments': [],
@@ -244,7 +247,7 @@ class Grok:
                 'disableTextFollowUps': False,
                 'responseMetadata': {
                     'requestModelDetails': {
-                        'modelId': self.model,
+                        'modelId': self.model_name,
                     },
                 },
                 'disableMemory': False,
@@ -258,7 +261,7 @@ class Grok:
         else:
             conversation_data: dict = {
                 'message': message,
-                'modelName': self.model,
+                'modelName': self.model_name,
                 'parentResponseId': extra_data["parentResponseId"],
                 'disableSearch': False,
                 'enableImageGeneration': True,
@@ -277,10 +280,10 @@ class Grok:
                 'webpageUrls': [],
                 'metadata': {
                     'requestModelDetails': {
-                        'modelId': self.model,
+                        'modelId': self.model_name,
                     },
                     'request_metadata': {
-                        'model': self.model,
+                        'model': self.model_name,
                         'mode': self.mode,
                     },
                 },
