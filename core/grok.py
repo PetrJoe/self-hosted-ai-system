@@ -9,21 +9,25 @@ from uuid        import uuid4
 @dataclass
 class Models:
     models: dict[str, list[str]] = field(default_factory=lambda: {
+        "auto": ["MODEL_MODE_AUTO", "auto"],
+        "fast": ["MODEL_MODE_FAST", "fast"],
+        "expert": ["MODEL_MODE_EXPERT", "expert"],
+        "heavy": ["MODEL_MODE_HEAVY", "heavy"],
+        "grok-4-mini-thinking-tahoe": ["MODEL_MODE_GROK_4_MINI_THINKING", "grok-4-mini-thinking"],
         "grok-3-auto": ["MODEL_MODE_AUTO", "auto"],
         "grok-3-fast": ["MODEL_MODE_FAST", "fast"],
         "grok-4": ["MODEL_MODE_EXPERT", "expert"],
-        "grok-4-mini-thinking-tahoe": ["MODEL_MODE_GROK_4_MINI_THINKING", "grok-4-mini-thinking"]
     })
 
     def get_model_mode(self, model: str, index: int) -> str:
-        return self.models.get(model, ["MODEL_MODE_AUTO", "auto"])[index]
+        return self.models.get(model, ["MODEL_MODE_FAST", "fast"])[index]
 
 _Models = Models()
 
 class Grok:
     
     
-    def __init__(self, model: str = "grok-3-auto", proxy: str = None) -> None:
+    def __init__(self, model: str = "fast", proxy: str = None) -> None:
         self.session: requests.session.Session = requests.Session(impersonate="chrome136", default_headers=False)
         self.headers: Headers = Headers()
         
@@ -142,7 +146,7 @@ class Grok:
         if not extra_data:
             conversation_data: dict = {
                 'temporary': False,
-                'modelName': self.model,
+                'modeId': self.mode,
                 'message': message,
                 'fileAttachments': [],
                 'imageAttachments': [],
@@ -161,12 +165,11 @@ class Grok:
                 'disableTextFollowUps': False,
                 'responseMetadata': {
                     'requestModelDetails': {
-                        'modelId': self.model,
+                        'modelId': self.mode,
                     },
                 },
                 'disableMemory': False,
                 'forceSideBySide': False,
-                'modelMode': self.model_mode,
                 'isAsyncChat': False,
             }
             
@@ -225,7 +228,7 @@ class Grok:
         else:
             conversation_data: dict = {
                 'message': message,
-                'modelName': self.model,
+                'modeId': self.mode,
                 'parentResponseId': extra_data["parentResponseId"],
                 'disableSearch': False,
                 'enableImageGeneration': True,
@@ -244,7 +247,7 @@ class Grok:
                 'webpageUrls': [],
                 'metadata': {
                     'requestModelDetails': {
-                        'modelId': self.model,
+                        'modelId': self.mode,
                     },
                     'request_metadata': {
                         'model': self.model,
@@ -256,7 +259,6 @@ class Grok:
                 'isFromGrokFiles': False,
                 'disableMemory': False,
                 'forceSideBySide': False,
-                'modelMode': self.model_mode,
                 'isAsyncChat': False,
                 'skipCancelCurrentInflightRequests': False,
                 'isRegenRequest': False,

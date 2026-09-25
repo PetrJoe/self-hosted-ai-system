@@ -90,5 +90,14 @@
       "7f135d62bad2571869ee5f0d225cb79c563ca5f584",
       "7f1e6362551b2af5179dab018073b43664269c4d49"
     ]
+  },
+  {
+    "xsid_script": "static/chunks/0tn-5ymhr8wsx.js",
+    "action_script": "https://cdn.grok.com/_next/static/chunks/2-cwnyufe_-9o.js",
+    "actions": [
+      "7f8dc7e796e950560612a879adebe318cc91b9aa9f",
+      "7f73cf6c5562b5cb9db3264ff7fc3835b23288ce30",
+      "40cee6e491b6402321849119d957b942ba4d57ef44"
+    ]
   }
 ]

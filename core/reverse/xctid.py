@@ -168,7 +168,7 @@ class Signature:
         msg = "!".join([method, path, str(n)]) + "obfiowerehiring" + o
         digest = sha256(msg.encode('utf-8')).digest()[:16]
 
-        prefix_byte = int(floor(random() if not random_float else random_float * 256))
+        prefix_byte = int(floor((random() if random_float is None else random_float) * 256))
         assembled = bytes([prefix_byte]) + r + t + digest + bytes([3])
 
         arr = bytearray(assembled)

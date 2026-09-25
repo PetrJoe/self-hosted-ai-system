@@ -10,7 +10,7 @@ app = FastAPI()
 class ConversationRequest(BaseModel):
     proxy: str | None = None
     message: str
-    model: str = "grok-3-auto"
+    model: str = "fast"
     extra_data: dict | None = None
 
 def format_proxy(proxy: str) -> str | None:

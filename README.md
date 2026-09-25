@@ -40,12 +40,16 @@ pip install -r requirements.txt
 
 ### Models:
 
-| Model                          | Mode                 | Description          |
-| ------------------------------ | -------------------- | -------------------- |
-| `grok-3-auto`                | auto                 | Automatic mode       |
-| `grok-3-fast`                | fast                 | Fast processing mode |
-| `grok-4`                     | expert               | Expert mode          |
-| `grok-4-mini-thinking-tahoe` | grok-4-mini-thinking | Mini thinking mode   |
+The API now selects a **mode** instead of a model name (`modeId`).
+
+| Model             | Mode id | Description                              |
+| ----------------- | ------- | ---------------------------------------- |
+| `fast`            | fast    | Fast processing mode (default, no account) |
+| `auto`            | auto    | Picks fast or expert mode (requires upgrade) |
+| `expert`          | expert  | Expert mode (requires upgrade)           |
+| `heavy`           | heavy   | Expert team mode (requires upgrade)      |
+
+The old model names (`grok-3-auto`, `grok-3-fast`, `grok-4`, `grok-4-mini-thinking-tahoe`) are still accepted as aliases.
 
 ### Manual Usage (Python)
 
@@ -54,11 +58,11 @@ pip install -r requirements.txt
 ```python
 from core import Grok
 
-response = Grok("grok-3-fast").start_convo("Hello, how are you today?")
+response = Grok("fast").start_convo("Hello, how are you today?")
 print(response)
 
 proxy = "http://username:password@ip:port"
-response = Grok("grok-3-fast", proxy).start_convo("Tell me a joke")
+response = Grok("fast", proxy).start_convo("Tell me a joke")
 print(response)
 ```
 
@@ -113,7 +117,7 @@ response = requests.post(
     json={
         "proxy": "http://user:pass@ip:port",
         "message": "Hello, Grok!",
-        "model": "grok-3-fast",
+        "model": "fast",
         "extra_data": None
     }
 )
@@ -130,7 +134,7 @@ response1 = requests.post(
     json={
         "proxy": "http://user:pass@ip:port",
         "message": "Hello!",
-        "model": "grok-3-fast",
+        "model": "fast",
         "extra_data": None
     }
 )
@@ -142,7 +146,7 @@ response2 = requests.post(
     json={
         "proxy": "http://user:pass@ip:port",
         "message": "Tell me more",
-        "model": "grok-3-fast",
+        "model": "fast",
         "extra_data": data1["extra_data"]
     }
 )
