@@ -214,7 +214,7 @@ class Grok:
                 }
             else:
                 if 'rejected by anti-bot rules' in convo_request.text:
-                    return Grok(self.session.proxies.get("all")).start_convo(message=message, extra_data=extra_data)
+                    return Grok(self.model, self.session.proxies.get("all")).start_convo(message=message, extra_data=extra_data)
                 elif "Grok is under heavy usage right now" in convo_request.text:
                     Log.Error("Grok is under heavy usage right now, try again later.")
                     return convo_request.json()
@@ -302,7 +302,7 @@ class Grok:
                 }
             else:
                 if 'rejected by anti-bot rules' in convo_request.text:
-                    return Grok(self.session.proxies.get("all")).start_convo(message=message, extra_data=extra_data)
+                    return Grok(self.model, self.session.proxies.get("all")).start_convo(message=message, extra_data=extra_data)
                 Log.Error("Something went wrong")
                 Log.Error(convo_request.text)
                 return {"error": convo_request.text}
