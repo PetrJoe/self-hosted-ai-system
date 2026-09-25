@@ -99,5 +99,15 @@
       "7f73cf6c5562b5cb9db3264ff7fc3835b23288ce30",
       "40cee6e491b6402321849119d957b942ba4d57ef44"
     ]
+  },
+  {
+    "xsid_script": "static/chunks/1xnnjwar6af3h.js",
+    "action_script": "https://cdn.grok.com/_next/static/chunks/0z8qatx6k7t5w.js",
+    "actions": [
+      "7fd9ce285e22b74636c167e313d965265280c8646b",
+      "7f5610ffe48b4b9c650e7df6d4f23b48bd3e92b930",
+      "405b55f303588940f304d69c780aeb675d75b9eb4a",
+      "00d54d8237ac1ff0388a35533b31e3eeafb25b072d"
+    ]
   }
 ]

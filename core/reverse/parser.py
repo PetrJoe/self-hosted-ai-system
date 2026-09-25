@@ -1,4 +1,4 @@
-from re        import findall, search, DOTALL
+from re        import findall, search, finditer, DOTALL
 from json      import load, dump, loads
 from base64    import b64decode
 from typing    import Optional
@@ -131,8 +131,8 @@ class Parser:
             content: str = contents.get(script)
             if not content or 'botoxSign' not in content:
                 continue
-            a_calls = [(m.start(), m.group(1)) for m in findall(r'\.A\((\d+)\)', content)]
-            b_positions = [m.start() for m in findall(r'botoxSign', content)]
+            a_calls = [(m.start(), m.group(1)) for m in finditer(r'\.A\((\d+)\)', content)]
+            b_positions = [m.start() for m in finditer(r'botoxSign', content)]
             for a_pos, a_id in a_calls:
                 if any(abs(a_pos - b_pos) < 800 for b_pos in b_positions):
                     module_id = a_id
